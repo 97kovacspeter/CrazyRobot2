@@ -1,0 +1,84 @@
+﻿<Window x:Class="Robot2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Robot2"
+        mc:Ignorable="d"
+        Title="Crazy Robot" Height="450" Width="800">
+    <Border Padding="2 2 2 2">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Menu Grid.Row="0" HorizontalAlignment="Center"  Width="auto" VerticalAlignment="Top">
+                <MenuItem Header="Pause" Command="{Binding PauseCommand}" />
+                <MenuItem Header="Continue" Command="{Binding ContinueCommand}" />
+                <MenuItem Header="Load" Command="{Binding LoadGameCommand}"/>
+                <MenuItem Header="Save" Command="{Binding SaveGameCommand}"/>
+                <MenuItem Header="New Game">
+                    <MenuItem Header="7x7" Command="{Binding NewGameEasyCommand}" />
+                    <MenuItem Header="11x11" Command="{Binding NewGameMediumCommand}" />
+                    <MenuItem Header="15x15" Command="{Binding NewGameHardCommand}" />
+                </MenuItem>
+            </Menu>
+
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Fields}">
+                <!--az mezőket tároló vezérlő-->
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="{Binding GetViewSize}" Columns="{Binding GetViewSize}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Margin="0 0 0 0" Command="{Binding Path=DataContext.MakeWallCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Type}" Value="4">
+                                            <Setter Property="Background" Value="Gray" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="2">
+                                            <Setter Property="Background" Value="Red" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="3">
+                                            <Setter Property="Background" Value="Black" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="1">
+                                            <Setter Property="Background" Value="Green" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Type}" Value="0">
+                                            <Setter Property="Background" Value="White" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsPlayer}" Value="True">
+                                            <Setter Property="Background" Value="Blue" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemContainerStyle>
+                    <!--a függőségi tulajdonságokat külön kell kötnünk-->
+                    <Style>
+                        <Setter Property="Grid.Row" Value="{Binding X}" />
+                        <Setter Property="Grid.Column" Value="{Binding Y}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+            </ItemsControl>
+
+            <StatusBar Grid.Row="2">
+                <StatusBarItem>
+                    <TextBlock Text="Game time: " />
+                </StatusBarItem>
+                <StatusBarItem>
+                    <TextBlock Text="{Binding GameTime}" />
+                </StatusBarItem>
+            </StatusBar>
+        </Grid>
+    </Border>
+</Window>
